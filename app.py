@@ -1,8 +1,10 @@
 from dotenv import load_dotenv
 from flask import Flask, request, render_template
+import os
 
 from weather_service import buscar_clima_por_cidade
 
+# Carrega variáveis do .env (local) ou ambiente (Render)
 load_dotenv()
 
 app = Flask(__name__)
@@ -15,7 +17,6 @@ def home():
 
     if cidade:
         result = buscar_clima_por_cidade(cidade)
-        print('result-------------8888888888888888', result, flush=True)
         if result["error"]:
             error = result["message"]
         else:
@@ -24,7 +25,6 @@ def home():
     return render_template("index.html", weather=weather, error=error, cidade=cidade)
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
-
+    # Porta dinâmica para o Render
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
